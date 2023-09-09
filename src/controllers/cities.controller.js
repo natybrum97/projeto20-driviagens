@@ -1,5 +1,6 @@
 import { stripHtml } from "string-strip-html";
-import { SalveCities, cityexists } from "../repository/cities.repository.js";
+import { citiesServices } from "../services/cities.services.js";
+import httpStatus from "http-status";
 
 export async function postCities(req, res) {
 
@@ -7,20 +8,8 @@ export async function postCities(req, res) {
 
     const sanitizedName = stripHtml(name).result.trim();
 
-    try {
+    await citiesServices.postCities(sanitizedName);
 
-        const city = await cityexists (sanitizedName);
-      
-        if (city.rows.length > 0) return res.status(409).send("Não é permitido adicionar cidades com nomes repetidos!");
-
-        await SalveCities(sanitizedName);
-
-        res.sendStatus(201);
-
-    } catch (err) {
-
-        res.status(500).send(err.message);
-
-    }
+    res.sendStatus(httpStatus.CREATED);
 
 }

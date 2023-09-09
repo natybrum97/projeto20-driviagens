@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export function SalveName(sanitizedfirstName, sanitizedlastName) {
+function SalveName(sanitizedfirstName, sanitizedlastName) {
 
     const result = db.query('INSERT INTO passengers ("firstName", "lastName" ) VALUES ($1, $2)',[sanitizedfirstName, sanitizedlastName]);
 
@@ -8,7 +8,7 @@ export function SalveName(sanitizedfirstName, sanitizedlastName) {
     
 }
 
-export function getPassengers() {
+function getPassengers() {
 
     const query = `
     SELECT CONCAT(p."firstName", ' ', p."lastName") AS passenger, COUNT(t."passengerId") AS travels
@@ -21,9 +21,9 @@ export function getPassengers() {
 const result = db.query(query);
 return result;
     
-}
+} 
 
-export function getPassengersByName(nameFilter) {
+function getPassengersByName(nameFilter) {
 
     const query = `
     SELECT CONCAT(p."firstName", ' ', p."lastName") AS passenger, COUNT(t."passengerId") AS travels
@@ -39,7 +39,7 @@ return result;
     
 }
 
-export function getPassengersByPage(limit, page) {
+function getPassengersByPage(limit, page) {
 
     const offset = (page - 1) * limit;
 
@@ -55,9 +55,9 @@ export function getPassengersByPage(limit, page) {
 const result = db.query(query, [limit, offset]);
 return result;
     
-}
+} 
 
-export function getPassengersByNamePage(nameFilter, limit, page) {
+function getPassengersByNamePage(nameFilter, limit, page) {
 
     const offset = (page - 1) * limit;
 
@@ -75,3 +75,11 @@ const result = db.query(query, [`%${nameFilter}%`, limit, offset]);
 return result;
     
 }
+
+export const passengersRepository = {
+    SalveName,
+    getPassengers,
+    getPassengersByName, 
+    getPassengersByPage, 
+    getPassengersByNamePage
+};

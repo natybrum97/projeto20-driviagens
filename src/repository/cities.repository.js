@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export function cityexists (sanitizedName) {
+function cityexists (sanitizedName) {
 
     const resultado = db.query('SELECT * FROM cities WHERE name = $1;', [sanitizedName]);
 
@@ -8,10 +8,15 @@ export function cityexists (sanitizedName) {
 
 }
 
-export function SalveCities(sanitizedName) {
+function SalveCities(sanitizedName) {
 
     const result = db.query('INSERT INTO cities ( name ) VALUES ($1)',[sanitizedName]);
 
     return result;
     
 }
+
+export const citiesRepository = {
+    cityexists,
+    SalveCities
+};

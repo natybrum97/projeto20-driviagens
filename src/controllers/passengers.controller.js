@@ -1,55 +1,27 @@
 import { stripHtml } from "string-strip-html";
-import { SalveName, getPassengers, getPassengersByName, getPassengersByNamePage, getPassengersByPage } from "../repository/passengers.repository.js";
+import { passengersRepository } from "../repository/passengers.repository.js";
+import { passengersServices } from "../services/passengers.services.js";
+import httpStatus from "http-status";
 
 export async function postPassengers(req, res) {
 
-    const { firstName, lastName } = req.body;
+        const { firstName, lastName } = req.body;
 
-    const sanitizedfirstName = stripHtml(firstName).result.trim();
-    const sanitizedlastName = stripHtml(lastName).result.trim();
+        const sanitizedfirstName = stripHtml(firstName).result.trim();
+        const sanitizedlastName = stripHtml(lastName).result.trim();
 
-    try {
+        await passengersRepository.SalveName(sanitizedfirstName, sanitizedlastName);
 
-        await SalveName(sanitizedfirstName, sanitizedlastName);
-
-        res.sendStatus(201);
-
-    } catch (err) {
-
-        res.status(500).send(err.message);
-
-    }
+        res.sendStatus(httpStatus.CREATED);
 
 }
 
 export async function getAllPassengersAndYourTravels(req, res) {
-    try {
+
         const nameFilter = req.query.name;
         let page = parseInt(req.query.page);
 
-        console.log(page);
+        const passengers = await passengersServices.getAllPassengersAndYourTravels(nameFilter, page);
 
-        const limit = 10; // Define o limite de resultados por página.
-
-        let passengers;
-
-        if (nameFilter && page){
-            passengers = await getPassengersByNamePage(nameFilter, limit, page);
-        } else if (nameFilter && !page){
-            passengers = await getPassengersByName(nameFilter);
-        } else if(!nameFilter && page){
-            passengers = await getPassengersByPage(limit, page);
-        } else if(!nameFilter && !page) {
-            passengers = await getPassengers();
-        }
-
-        if (passengers.rows.length > 10) {
-            res.status(500).send("Too many results");
-        } else {
-            res.send(passengers.rows);
-        }
-
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+        return res.status(httpStatus.OK).send(passengers.rows);
 }

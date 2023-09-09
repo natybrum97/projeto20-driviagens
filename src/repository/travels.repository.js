@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export function SalveTravels(passengerId, flightId) {
+function SalveTravels(passengerId, flightId) {
 
     const result = db.query('INSERT INTO travels ( "passengerId", "flightId" ) VALUES ($1, $2)',[passengerId, flightId]);
 
@@ -8,18 +8,23 @@ export function SalveTravels(passengerId, flightId) {
     
 }
 
-export function idExistsPassengerId (passengerId) {
+function idExistsPassengerId (passengerId) {
 
     const resultado = db.query('SELECT * FROM passengers WHERE id = $1;', [passengerId]);
 
     return resultado;
 
 }
-
-export function idExistsFlightId (flightId) {
+function idExistsFlightId (flightId) {
 
     const resultado = db.query('SELECT * FROM flights WHERE id = $1;', [flightId]);
 
     return resultado;
 
 }
+
+export const travelsRepository = {
+    SalveTravels,
+    idExistsPassengerId,
+    idExistsFlightId
+};

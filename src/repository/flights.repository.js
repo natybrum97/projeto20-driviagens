@@ -1,14 +1,14 @@
 import { db } from "../database/database.connection.js";
 
-export function SalveFlights(origin, destination, sanitizedDate) {
+function SalveFlights(origin, destination, sanitizedDate) {
 
     const result = db.query('INSERT INTO flights ( origin, destination, date ) VALUES ($1, $2, $3)',[origin, destination, sanitizedDate]);
 
     return result;
     
-}
+} 
 
-export function idExistsOrigin (origin) {
+function idExistsOrigin (origin) {
 
     const resultado = db.query('SELECT * FROM cities WHERE id = $1;', [origin]);
 
@@ -16,16 +16,16 @@ export function idExistsOrigin (origin) {
 
 }
 
-export function idExistsDestination (destination) {
+function idExistsDestination (destination) {
 
     const resultado = db.query('SELECT * FROM cities WHERE id = $1;', [destination]);
 
     return resultado;
 
-}
+} 
 
 
-export function getFlightsByOrder() {
+function getFlightsByOrder() {
     const resultado = db.query(`
     SELECT
     td.id AS id,
@@ -45,7 +45,7 @@ ORDER BY
     return resultado;
 }
 
-export function SearchFlightsByOrigin (originCity) {
+function SearchFlightsByOrigin (originCity) {
     const queryString = `
     SELECT
         td.id AS id,
@@ -68,7 +68,7 @@ export function SearchFlightsByOrigin (originCity) {
     return result;
 }
 
-export function SearchFlightsByDestination(destinationCity) {
+function SearchFlightsByDestination(destinationCity) {
     const queryString = `
     SELECT
         td.id AS id,
@@ -89,9 +89,9 @@ export function SearchFlightsByDestination(destinationCity) {
   
     const result = db.query(queryString, [`%${destinationCity}%`]);
     return result;
-}
+} 
 
-export function SearchFlightsByDestinationOrder(originCity,destinationCity) {
+function SearchFlightsByDestinationOrder(originCity,destinationCity) {
     const queryString = `
     SELECT
         td.id AS id,
@@ -116,7 +116,7 @@ export function SearchFlightsByDestinationOrder(originCity,destinationCity) {
     return result;
 }
 
-export function SearchFlightsByBiggerSmaller(smallerDateString,biggerDateString) {
+function SearchFlightsByBiggerSmaller(smallerDateString,biggerDateString) {
     const queryString = `
         SELECT
             td.id AS id,
@@ -139,9 +139,9 @@ export function SearchFlightsByBiggerSmaller(smallerDateString,biggerDateString)
 
     const result = db.query(queryString, [smallerDateString,biggerDateString]);
     return result;
-}
+} 
 
-export function SearchFlightsByDestinationOrderBiggerSmaller(originCity, destinationCity, smallerDateString,biggerDateString) {
+function SearchFlightsByDestinationOrderBiggerSmaller(originCity, destinationCity, smallerDateString,biggerDateString) {
     const queryString = `
         SELECT
             td.id AS id,
@@ -168,9 +168,9 @@ export function SearchFlightsByDestinationOrderBiggerSmaller(originCity, destina
 
     const result = db.query(queryString, [originCity, destinationCity,smallerDateString,biggerDateString]);
     return result;
-}
+} 
 
-export function SearchFlightsByDestinationBiggerSmaller(destinationCity, smallerDateString, biggerDateString) {
+function SearchFlightsByDestinationBiggerSmaller(destinationCity, smallerDateString, biggerDateString) {
     const queryString = `
         SELECT
             td.id AS id,
@@ -195,9 +195,9 @@ export function SearchFlightsByDestinationBiggerSmaller(destinationCity, smaller
 
     const result = db.query(queryString, [destinationCity,smallerDateString,biggerDateString]);
     return result;
-}
+} 
 
-export function SearchFlightsByOriginBiggerSmaller(originCity, smallerDateString, biggerDateString) {
+function SearchFlightsByOriginBiggerSmaller(originCity, smallerDateString, biggerDateString) {
     const queryString = `
         SELECT
             td.id AS id,
@@ -222,5 +222,19 @@ export function SearchFlightsByOriginBiggerSmaller(originCity, smallerDateString
 
     const result = db.query(queryString, [originCity, smallerDateString,biggerDateString]);
     return result;
-}
+} 
+
+export const flightsRepository = {
+    SalveFlights, 
+    idExistsOrigin, 
+    idExistsDestination, 
+    getFlightsByOrder, 
+    SearchFlightsByOrigin, 
+    SearchFlightsByDestination, 
+    SearchFlightsByDestinationOrder, 
+    SearchFlightsByBiggerSmaller, 
+    SearchFlightsByDestinationOrderBiggerSmaller, 
+    SearchFlightsByDestinationBiggerSmaller,
+    SearchFlightsByOriginBiggerSmaller
+};
 
