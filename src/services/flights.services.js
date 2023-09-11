@@ -1,5 +1,6 @@
 import { flightsRepository } from "../repository/flights.repository.js";
 import { errors } from "../erros/erros.js";
+import { parse } from 'date-fns';
 
 async function postFlights(origin, destination,sanitizedDate) {
   
@@ -14,8 +15,12 @@ async function postFlights(origin, destination,sanitizedDate) {
       if (origin === destination) throw errors.conflictForBeingEqual("Origem e destino");
   
       const currentDate = new Date();
-  
-      const flightDate = new Date(sanitizedDate);
+
+      const flightDate = parse(sanitizedDate, 'dd-MM-yyyy', new Date());
+
+      console.log(flightDate <= currentDate)
+      console.log(flightDate)
+      console.log(currentDate)
   
       if (flightDate <= currentDate) throw errors.UnprocessableEntityforDate();
   
